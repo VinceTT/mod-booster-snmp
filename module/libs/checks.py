@@ -239,6 +239,10 @@ def prepare_oids(ret, service, group_size=64):
     """ This function, is in a reduce function,
     groups oids to launch grouped SNMP requests
     """
+    # Rebuild global dict
+    global_dict = {}
+    for sub_dict in ret:
+        global_dict.update(sub_dict) 
     # For each ds_name
     for ds_name, ds_data in service['ds'].items():
         # For each ds_oid, min and max
@@ -257,10 +261,10 @@ def prepare_oids(ret, service, group_size=64):
                     ret.append(tmp_dict)
                 # Construct oid
                 oid = ds_data[oid_type] % service
-                if oid in tmp_dict:
+                if oid in global_dict:
                     # If we have already added the oid
                     # We only add the ds_name
-                    tmp_dict[oid]['key']['ds_names'].append(ds_name)
+                    global_dict[oid]['key']['ds_names'].append(ds_name)
                 else:
                     # Check if we have a ds_max and get the oid
                     ds_max_oid = None
@@ -299,4 +303,5 @@ def prepare_oids(ret, service, group_size=64):
                                      # Get min oid
                                      'ds_min_oid': ds_min_oid,
                                      }
+                    global_dict[oid] = tmp_dict[oid]
     return ret
