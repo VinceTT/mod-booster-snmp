@@ -155,14 +155,14 @@ def check_snmp(check, arguments, db_client, task_queue, result_queue):
                 mapping_task['data']["maxRepetitions"] = serv.get('max_rep_map',
                                                                   64)
                 mapping_task['data']['cbInfo'] = (callback_mapping_bulk,
-                                                  (serv['mapping'],
+                                                  (snmp_info.mapping,
                                                    check.result,
                                                    result))
             else:
                 # Add snmp request type
                 mapping_task['type'] = 'next'
                 mapping_task['data']['cbInfo'] = (callback_mapping_next,
-                                                  (serv['mapping'],
+                                                  (snmp_info.mapping,
                                                    check.result,
                                                    result))
             task_queue.put(mapping_task, block=False)
